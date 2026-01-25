@@ -1,0 +1,8 @@
+## Interface: 120000, 120001
+## Title: Paladin Light Tracker
+## Notes: Простой трекер Энергии Света для Паладина
+## Author: Fuego
+## IconTexture: Interface\Icons\Spell_Holy_HolyGuidance
+## Version: 1.0.1
+## SavedVariables: PaladinLightTrackerDB
+PaladinLightTracker.lua

@@ -1,0 +1,19 @@
+
+Спец кнопка:
+
+/click ExtraActionButton1
+
+
+Включение-отключение текста боя:
+
+/console floatingCombatTextCombatHealing 1
+/console floatingCombatTextCombatDamage 1
+1 - вкл
+0 - выкл
+
+
+Макросы на маусовер:
+
+/cast [@mouseover,help,nodead] Торжество; Торжество
+Если под курсором нет цели - каст на себя.
+
