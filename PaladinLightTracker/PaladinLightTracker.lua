@@ -5,10 +5,17 @@ frame:SetMovable(true)
 frame:EnableMouse(true)
 frame:RegisterForDrag("LeftButton")
 
+-- Важно: отключаем обработку кликов по умолчанию
+frame:EnableMouse(false)
+
+-- Но включаем возможность получать события драга
+frame:EnableMouse(true)
+frame:RegisterForDrag("LeftButton")
+
 -- Создаем фон для всей панели
 local bg = frame:CreateTexture(nil, "BACKGROUND")
 bg:SetAllPoints()
-bg:SetColorTexture(0, 0, 0, 0.3) -- Полупрозрачный черный фон
+bg:SetColorTexture(0, 0, 0, 0.3) -- Полупозрачный черный фон
 
 -- Массив для хранения сегментов (полосок)
 local segments = {}
@@ -59,15 +66,19 @@ local function UpdatePower()
     end
 end
 
--- Сохранение позиции и управление
-frame:SetScript("OnDragStart", function(self)
-    if IsShiftKeyDown() then self:StartMoving() end
+-- Обработка драга для перемещения фрейма
+frame:SetScript("OnMouseDown", function(self, button)
+    if button == "LeftButton" and IsShiftKeyDown() then
+        self:StartMoving()
+    end
 end)
 
-frame:SetScript("OnDragStop", function(self)
-    self:StopMovingOrSizing()
-    local point, _, relPoint, x, y = self:GetPoint()
-    PaladinLightTrackerDB = {point = point, relPoint = relPoint, x = x, y = y}
+frame:SetScript("OnMouseUp", function(self, button)
+    if button == "LeftButton" then
+        self:StopMovingOrSizing()
+        local point, _, relPoint, x, y = self:GetPoint()
+        PaladinLightTrackerDB = {point = point, relPoint = relPoint, x = x, y = y}
+    end
 end)
 
 -- Регистрация событий
