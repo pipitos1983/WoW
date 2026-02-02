@@ -1,19 +1,20 @@
+-- Создание основного фрейма
 local frame = CreateFrame("Frame", "PaladinLightTrackerFrame", UIParent)
-frame:SetSize(140, 18) -- Общий размер панели
+frame:SetSize(140, 18)
 frame:SetPoint("CENTER")
 frame:SetMovable(true)
-
--- ВАЖНО: Включаем обработку мыши, но не регистрируем для драга по умолчанию
--- Фрейм будет получать все события мыши, но не будет обрабатывать стандартный драг
 frame:EnableMouse(true)
--- НЕ используем RegisterForDrag здесь!
+frame:SetClampedToScreen(true)
 
--- Создаем фон для всей панели
+-- КЛЮЧЕВАЯ ФУНКЦИЯ: Позволяет кликам проходить сквозь фрейм в игру
+frame:SetPropagateMouseClicks(true)
+
+-- Фон панели
 local bg = frame:CreateTexture(nil, "BACKGROUND")
 bg:SetAllPoints()
-bg:SetColorTexture(0, 0, 0, 0.3) -- Полупрозрачный черный фон
+bg:SetColorTexture(0, 0, 0, 0.3)
 
--- Массив для хранения сегментов (полосок)
+-- Создание сегментов энергии
 local segments = {}
 local spacing = 4
 local segmentWidth = (frame:GetWidth() - (spacing * 6)) / 5
@@ -23,16 +24,13 @@ for i = 1, 5 do
     s:SetSize(segmentWidth, frame:GetHeight() - 8)
     s:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
     s:GetStatusBarTexture():SetHorizTile(false)
-    s:SetStatusBarColor(1, 0.9, 0) -- Золотой цвет паладина
     
-    -- Позиционирование сегментов в ряд
     if i == 1 then
         s:SetPoint("LEFT", frame, "LEFT", spacing, 0)
     else
         s:SetPoint("LEFT", segments[i-1], "RIGHT", spacing, 0)
     end
     
-    -- Фон каждого сегмента (пустая полоска)
     local sBg = s:CreateTexture(nil, "BACKGROUND")
     sBg:SetAllPoints()
     sBg:SetColorTexture(0.2, 0.2, 0.2, 0.6)
@@ -42,48 +40,49 @@ for i = 1, 5 do
     segments[i] = s
 end
 
--- Функция обновления визуальной части
+-- Логика обновления энергии
 local function UpdatePower()
     local power = UnitPower("player", Enum.PowerType.HolyPower)
+    local maxPower = UnitPowerMax("player", Enum.PowerType.HolyPower)
+    
     for i = 1, 5 do
         if i <= power then
             segments[i]:SetValue(1)
             segments[i]:SetAlpha(1)
-            -- Эффект свечения, если энергии максимум
+            -- Подсветка: ярко-желтый при накоплении 3+ или 5 (зависит от предпочтений)
             if power >= 3 then
-                segments[i]:SetStatusBarColor(1, 1, 0.5) 
+                segments[i]:SetStatusBarColor(1, 0.9, 0) -- Золотой
             else
-                segments[i]:SetStatusBarColor(0.7, 0.7, 0.7)
+                segments[i]:SetStatusBarColor(0.7, 0.7, 0.7) -- Серый (накопление)
             end
         else
             segments[i]:SetValue(0)
-            segments[i]:SetAlpha(0.5) -- Делаем пустые сегменты тусклыми
+            segments[i]:SetAlpha(0.3)
         end
     end
 end
 
--- Обработка мыши для реализации кастомного драга только при Shift
+-- Перемещение фрейма (Shift + ЛКМ)
 frame:SetScript("OnMouseDown", function(self, button)
     if button == "LeftButton" and IsShiftKeyDown() then
+        self:SetPropagateMouseClicks(false) -- Отключаем прокликивание на время драга
         self:StartMoving()
-        -- Запоминаем, что начали драг
         self.isDragging = true
-    else
-        -- Если не Shift+ЛКМ, просто позволяем клику пройти дальше
-        -- не делаем ничего
     end
 end)
 
 frame:SetScript("OnMouseUp", function(self, button)
-    if button == "LeftButton" and self.isDragging then
+    if self.isDragging then
         self:StopMovingOrSizing()
         self.isDragging = false
+        self:SetPropagateMouseClicks(true) -- Возвращаем прокликивание
+        
+        -- Сохранение позиции
         local point, _, relPoint, x, y = self:GetPoint()
         PaladinLightTrackerDB = {point = point, relPoint = relPoint, x = x, y = y}
     end
 end)
 
--- Также обрабатываем OnHide на случай, если отпустим кнопку вне фрейма
 frame:SetScript("OnHide", function(self)
     if self.isDragging then
         self:StopMovingOrSizing()
@@ -91,20 +90,28 @@ frame:SetScript("OnHide", function(self)
     end
 end)
 
--- Регистрация событий
+-- Обработка событий
 frame:RegisterEvent("UNIT_POWER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_TALENT_UPDATE")
 
 frame:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1 == "PaladinLightTracker" then
+        -- Загрузка позиции
         if PaladinLightTrackerDB then
             self:ClearAllPoints()
             self:SetPoint(PaladinLightTrackerDB.point, UIParent, PaladinLightTrackerDB.relPoint, PaladinLightTrackerDB.x, PaladinLightTrackerDB.y)
         end
+        -- Проверка класса
         local _, class = UnitClass("player")
-        if class ~= "PALADIN" then self:Hide() end
-    elseif (event == "UNIT_POWER_UPDATE" and arg1 == "player" and arg2 == "HOLY_POWER") or event == "PLAYER_ENTERING_WORLD" then
+        if class ~= "PALADIN" then 
+            self:UnregisterAllEvents()
+            self:Hide() 
+        end
+    elseif (event == "UNIT_POWER_UPDATE" and arg1 == "player" and arg2 == "HOLY_POWER") 
+        or event == "PLAYER_ENTERING_WORLD" 
+        or event == "PLAYER_TALENT_UPDATE" then
         UpdatePower()
     end
 end)
