@@ -2,20 +2,16 @@ local frame = CreateFrame("Frame", "PaladinLightTrackerFrame", UIParent)
 frame:SetSize(140, 18) -- Общий размер панели
 frame:SetPoint("CENTER")
 frame:SetMovable(true)
-frame:EnableMouse(true)
-frame:RegisterForDrag("LeftButton")
 
--- Важно: отключаем обработку кликов по умолчанию
-frame:EnableMouse(false)
-
--- Но включаем возможность получать события драга
+-- ВАЖНО: Включаем обработку мыши, но не регистрируем для драга по умолчанию
+-- Фрейм будет получать все события мыши, но не будет обрабатывать стандартный драг
 frame:EnableMouse(true)
-frame:RegisterForDrag("LeftButton")
+-- НЕ используем RegisterForDrag здесь!
 
 -- Создаем фон для всей панели
 local bg = frame:CreateTexture(nil, "BACKGROUND")
 bg:SetAllPoints()
-bg:SetColorTexture(0, 0, 0, 0.3) -- Полупозрачный черный фон
+bg:SetColorTexture(0, 0, 0, 0.3) -- Полупрозрачный черный фон
 
 -- Массив для хранения сегментов (полосок)
 local segments = {}
@@ -66,18 +62,32 @@ local function UpdatePower()
     end
 end
 
--- Обработка драга для перемещения фрейма
+-- Обработка мыши для реализации кастомного драга только при Shift
 frame:SetScript("OnMouseDown", function(self, button)
     if button == "LeftButton" and IsShiftKeyDown() then
         self:StartMoving()
+        -- Запоминаем, что начали драг
+        self.isDragging = true
+    else
+        -- Если не Shift+ЛКМ, просто позволяем клику пройти дальше
+        -- не делаем ничего
     end
 end)
 
 frame:SetScript("OnMouseUp", function(self, button)
-    if button == "LeftButton" then
+    if button == "LeftButton" and self.isDragging then
         self:StopMovingOrSizing()
+        self.isDragging = false
         local point, _, relPoint, x, y = self:GetPoint()
         PaladinLightTrackerDB = {point = point, relPoint = relPoint, x = x, y = y}
+    end
+end)
+
+-- Также обрабатываем OnHide на случай, если отпустим кнопку вне фрейма
+frame:SetScript("OnHide", function(self)
+    if self.isDragging then
+        self:StopMovingOrSizing()
+        self.isDragging = false
     end
 end)
 
