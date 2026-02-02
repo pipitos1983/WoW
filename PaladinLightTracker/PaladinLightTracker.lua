@@ -90,6 +90,25 @@ frame:SetScript("OnHide", function(self)
     end
 end)
 
+-- Регистрация команды в чате
+SLASH_RESOURCETRACKER1 = "/rst"
+
+SlashCmdList["RESOURCETRACKER"] = function(msg)
+    msg = msg:lower()
+    if msg == "reset" then
+        -- 1. Сбрасываем позицию визуально
+        frame:ClearAllPoints()
+        frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+        
+        -- 2. Очищаем сохраненные данные, чтобы после релога позиция не вернулась
+        PaladinLightTrackerDB = nil
+        
+        print("|cFFFFFF00[PaladinLightTracker]|r: Позиция сброшена на центр экрана.")
+    else
+        print("|cFFFFFF00[PaladinLightTracker]|r: Используйте |cFF00FF00/plt reset|r для сброса позиции.")
+    end
+end
+
 -- Обработка событий
 frame:RegisterEvent("UNIT_POWER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
