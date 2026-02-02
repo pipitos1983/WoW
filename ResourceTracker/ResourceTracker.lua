@@ -147,11 +147,22 @@ frame:RegisterEvent("MODIFIER_STATE_CHANGED")
 
 frame:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
-        if not ResourceTrackerDB then ResourceTrackerDB = {} end
-        for k, v in pairs(defaults) do
-            if ResourceTrackerDB[k] == nil then ResourceTrackerDB[k] = v end
+        ResourceTrackerDB = ResourceTrackerDB or {}
+        
+        local charKey = UnitName("player") .. " - " .. GetRealmName()
+        
+        if not ResourceTrackerDB[charKey] then 
+            ResourceTrackerDB[charKey] = {} 
         end
-        db = ResourceTrackerDB
+        
+        for k, v in pairs(defaults) do
+            if ResourceTrackerDB[charKey][k] == nil then 
+                ResourceTrackerDB[charKey][k] = v 
+            end
+        end
+        
+        db = ResourceTrackerDB[charKey]
+        
         self:ClearAllPoints()
         self:SetPoint(db.point, UIParent, db.relPoint, db.x, db.y)
     end

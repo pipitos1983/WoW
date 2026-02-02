@@ -3,7 +3,7 @@
 ## Notes: Simple Resource Tracker
 ## Author: Fuego
 ## IconTexture: Interface\Icons\inv_chicken2_dirty
-## Version: 1.0.5
+## Version: 1.0.7
 ## SavedVariables: ResourceTrackerDB
 
 Localization\enUS.lua
