@@ -44,13 +44,26 @@ mbBg:SetColorTexture(0, 0, 0, 0.5)
 local function GetSpecialResource()
     local _, class = UnitClass("player")
     local spec = GetSpecialization()
-    if class == "PALADIN" then return Enum.PowerType.HolyPower, {1, 0.9, 0}
-    elseif class == "ROGUE" or (class == "DRUID" and GetShapeshiftForm() == 2) then return Enum.PowerType.ComboPoints, {1, 0.1, 0.1}
-    elseif class == "MONK" then return Enum.PowerType.Chi, {0, 1, 0.8}
-    elseif class == "DEATHKNIGHT" then return "RUNES", {0.6, 0.2, 1}
-    elseif class == "WARLOCK" then return Enum.PowerType.SoulShards, {0.6, 0.4, 0.8}
-    elseif class == "MAGE" and spec == 1 then return Enum.PowerType.ArcaneCharges, {0.1, 0.5, 1}
-    elseif class == "EVOKER" then return Enum.PowerType.Essence, {0.2, 0.7, 1}
+    
+    if class == "PALADIN" then 
+        return Enum.PowerType.HolyPower, {1, 0.9, 0}
+    elseif class == "ROGUE" or (class == "DRUID" and GetShapeshiftForm() == 2) then 
+        return Enum.PowerType.ComboPoints, {1, 0.1, 0.1}
+    elseif class == "MONK" then 
+        -- Показываем Ци только для WW (Спек №3). 1 - Хмелевар, 2 - Ткач туманов.
+        if spec == 3 then
+            return Enum.PowerType.Chi, {0, 1, 0.8}
+        else
+            return nil
+        end
+    elseif class == "DEATHKNIGHT" then 
+        return "RUNES", {0.6, 0.2, 1}
+    elseif class == "WARLOCK" then 
+        return Enum.PowerType.SoulShards, {0.6, 0.4, 0.8}
+    elseif class == "MAGE" and spec == 1 then 
+        return Enum.PowerType.ArcaneCharges, {0.1, 0.5, 1}
+    elseif class == "EVOKER" then 
+        return Enum.PowerType.Essence, {0.2, 0.7, 1}
     end
     return nil
 end
@@ -144,6 +157,7 @@ frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("RUNE_POWER_UPDATE")
 frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 frame:RegisterEvent("MODIFIER_STATE_CHANGED")
+frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 
 frame:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
