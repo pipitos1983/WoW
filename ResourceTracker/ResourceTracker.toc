@@ -2,7 +2,7 @@
 ## Title: Resource Tracker
 ## Notes: Simple Resource Tracker
 ## Author: Fuego
-## IconTexture: Interface\Icons\inv_chicken2_dirty
+## IconTexture: Interface\AddOns\ResourceTracker\Media\ResourceTracker.tga
 ## Version: 1.0.7
 ## SavedVariables: ResourceTrackerDB
 
