@@ -263,7 +263,7 @@ local questButton_OnEnter = function(self)
 			self.UpdateTooltip = TaskPOI_OnEnter -- function()end
 		end
 		if (not issecurevariable(self, "questID")) then
-    		securecall(TaskPOI_OnEnter, self)
+    		securecall("TaskPOI_OnEnter", self)
 		else
     		TaskPOI_OnEnter(self)
 		end

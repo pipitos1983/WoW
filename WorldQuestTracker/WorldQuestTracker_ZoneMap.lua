@@ -101,9 +101,7 @@ function WorldQuestTracker.CreateZoneWidget(index, name, parent, pinTemplate) --
 	button:SetScript("OnEnter", function()
 		if (button.questID and type(button.questID) == "number" and button.questID >= 2) then
 			GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-			securecall(function() 
-    			GameTooltip_AddQuest(button) 
-			end)
+			GameTooltip_AddQuest(button)
 			--TaskPOI_OnEnter(button)
 		end
 	end)
