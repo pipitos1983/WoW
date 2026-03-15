@@ -1,11 +1,17 @@
 
 Спец кнопка:
-
 /click ExtraActionButton1
 
+Сброс встроенного счетчика урона/исцеления:
+/run C_DamageMeter.ResetAllCombatSessions()
+
+Выход из вылазки (если добрался до находки):
+/run C_PartyInfo.DelveTeleportOut()
+
+! все что запускается через команду /run на самом деле 
+! lua функции которые можно использовать в аддонах или брать из них.
 
 Включение-отключение текста боя:
-
 /console floatingCombatTextCombatHealing 1
 /console floatingCombatTextCombatDamage 1
 1 - вкл
@@ -13,7 +19,6 @@
 
 
 Макросы на маусовер:
-
 /cast [@mouseover,help,nodead] Торжество; Торжество
 Если под курсором нет цели - каст на себя.
 
