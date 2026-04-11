@@ -17,6 +17,7 @@
 1 - вкл
 0 - выкл
 
+midnight:
 /console floatingCombatTextCombatHealing_v2 1
 /console floatingCombatTextCombatDamage_v2 1
 /console floatingCombatTextCombatLogPeriodicSpells_v2 1
