@@ -29,3 +29,7 @@ midnight:
 /cast [@mouseover,help,nodead] Торжество; Торжество
 Если под курсором нет цели - каст на себя.
 
+Узнать ID иконки предмета с известным ID предмета:
+/run local icon = GetItemIcon(ID_предмета); print("ID иконки: " .. icon)
+пример:
+/run local icon = GetItemIcon(242321); print("ID иконки: " .. icon)
