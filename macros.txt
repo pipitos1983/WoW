@@ -29,7 +29,9 @@ midnight:
 /cast [@mouseover,help,nodead] Торжество; Торжество
 Если под курсором нет цели - каст на себя.
 
-Узнать ID иконки предмета с известным ID предмета:
+Узнать ID иконки предмета с известным ID предмета/способности:
 /run local icon = GetItemIcon(ID_предмета); print("ID иконки: " .. icon)
+/run local icon = C_Spell.GetSpellTexture(ID_способности); print("ID иконки: " .. icon)
 пример:
 /run local icon = GetItemIcon(242321); print("ID иконки: " .. icon)
+/run local icon = C_Spell.GetSpellTexture(441591); print("ID иконки: " .. icon)
