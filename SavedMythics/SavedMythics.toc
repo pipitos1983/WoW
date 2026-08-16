@@ -1,0 +1,8 @@
+## Interface: 120100
+## Title: SavedMythics
+## Notes: Track mythic dungeon lockouts for all characters.
+## SavedVariables: SavedMythicsDB
+## Version: 1.0
+## IconTexture: Interface\AddOns\SavedMythics\Media\icon.tga
+
+SavedMythics.lua
