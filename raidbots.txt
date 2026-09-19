@@ -1,0 +1,10 @@
+Сравнение петов варлока:
+
+1 открыть https://www.raidbots.com/simbot/advanced
+2 вставить иморт из аддона simc в игре
+3 в конце добавить:
+
+profileset."Охотник Скверны"=+summon_pet=felhunter
+profileset."Страж Скверны"=+summon_pet=felguard
+
+4 Нажать "Run Similation"
